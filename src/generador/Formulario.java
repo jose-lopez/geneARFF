@@ -297,7 +297,7 @@ public class Formulario extends javax.swing.JFrame {
                         int j = linea.indexOf("p");
                         indice_inf = j-(cantidad);
                         indice_sup = j+((cantidad)+1)+4;
-                        System.out.println(linea.substring(indice_inf, indice_sup));
+                        //System.out.println(linea.substring(indice_inf, indice_sup));
                         if(indice_inf >= 0 && indice_sup >= 0){
                             //linea = linea.substring(indice_inf, indice_sup);
                             //linea = linea.replaceAll(",p,", ",");
@@ -331,7 +331,7 @@ public class Formulario extends javax.swing.JFrame {
                             int k = linea.indexOf("p");
                             indice_inf = k - cantidad;
                             indice_sup = k + cantidad + 1 + 4;
-                            System.out.println(linea.substring(indice_inf, indice_sup));
+                            //System.out.println(linea.substring(indice_inf, indice_sup));
                             
                             if(indice_inf >= 0 && indice_sup >= 0){
                                 //linea = linea.substring(indice_inf, indice_sup);
@@ -374,7 +374,7 @@ public class Formulario extends javax.swing.JFrame {
                         int j = linea.indexOf("p");
                         indice_inf = j-(cantidad);
                         indice_sup = j+((cantidad)+1)+4;
-                        System.out.println(linea.substring(indice_inf, indice_sup));
+                        //System.out.println(linea.substring(indice_inf, indice_sup));
                         if(indice_inf >= 0 && indice_sup >= 0){
                             //linea = linea.substring(indice_inf, indice_sup);
                             //linea = linea.replaceAll(",p,", ",");
@@ -409,7 +409,7 @@ public class Formulario extends javax.swing.JFrame {
                             int k = linea.indexOf("p");
                             indice_inf = k - cantidad;
                             indice_sup = k + cantidad + 1 + 4;
-                            System.out.println(linea.substring(indice_inf, indice_sup));
+                            //System.out.println(linea.substring(indice_inf, indice_sup));
                             if(indice_inf >= 0 && indice_sup >= 0){
                                 //linea = linea.substring(indice_inf, indice_sup);
                                 //linea = linea.replaceAll(",p,", ",");
