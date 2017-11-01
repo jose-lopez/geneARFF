@@ -50,12 +50,12 @@ public class Formulario extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jSpinner1 = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<String>();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<String>();
+        jList1 = new javax.swing.JList<>();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<String>();
+        jList2 = new javax.swing.JList<>();
         jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -78,7 +78,7 @@ public class Formulario extends javax.swing.JFrame {
 
         jLabel2.setText("Seleccione la cantidad de la subcadena");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ExonIntron", "IntronExon" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ExonIntron", "IntronExon", "ZIExon", "ExonZI" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -105,6 +105,12 @@ public class Formulario extends javax.swing.JFrame {
         });
 
         jLabel5.setText("Destino");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Examinar...");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -204,7 +210,7 @@ public class Formulario extends javax.swing.JFrame {
                     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     int returnValue = fileChooser.showOpenDialog(null);
                     if (returnValue == JFileChooser.APPROVE_OPTION) {
-                      carpeta = fileChooser.getCurrentDirectory();
+                      carpeta = fileChooser.getSelectedFile();
                       jTextField1.setText(carpeta.toString());
                     }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -253,15 +259,24 @@ public class Formulario extends javax.swing.JFrame {
             
             String cadena = jComboBox1.getSelectedItem().toString();
             //System.out.println(cadena);
-            
+            int offset=0;
             if(jComboBox1.getSelectedItem() == "ExonIntron"){
                 arc = new EscribirArchivo(carpeta.getPath()+"/DataEI.arff", true);
                 arc.EscribirEnArchivo("@RELATION ExonIntron");
-            }else{//IntronExon
+                offset=4;
+            
+            }else if(jComboBox1.getSelectedItem() == "IntronExon"){//IntronExon
                 arc = new EscribirArchivo(carpeta.getPath()+"/DataIE.arff", true);
                 arc.EscribirEnArchivo("@RELATION IntronExon");
+                offset=4;
             }
-            
+            else if(jComboBox1.getSelectedItem() == "ZIExon"){//IntronExon
+                arc = new EscribirArchivo(carpeta.getPath()+"/DataZE.arff", true);
+                arc.EscribirEnArchivo("@RELATION ZIExon");
+            }else{//IntronExon
+                arc = new EscribirArchivo(carpeta.getPath()+"/DataEZ.arff", true);
+                arc.EscribirEnArchivo("@RELATION ExonZI");
+            }
             if((Integer)jSpinner1.getValue() > 0){
                 cantidad = (Integer)jSpinner1.getValue() * 2;
             }else{
@@ -281,7 +296,6 @@ public class Formulario extends javax.swing.JFrame {
             Iterator item = archivos.iterator();
             boolean band = false;
             int indice_inf = 0, indice_sup = 0;
-            
             while(item.hasNext()){//Existen items seleccionados
                 band=true;
                 
@@ -289,20 +303,22 @@ public class Formulario extends javax.swing.JFrame {
                 int lineas = arcp.CantidadLineas();
                 String[] Data = new String[lineas];
                 Data = arcp.AbrirArchivo();
-            
                 for (int i = 0; i < lineas; i++) {
                     String linea = Data[i];
                     String cadena1, cadena2;
                     if (linea.contains("p")) {
+                        
                         int j = linea.indexOf("p");
                         indice_inf = j-(cantidad);
-                        indice_sup = j+((cantidad)+1)+4;
+                        indice_sup = j+((cantidad)+3)+offset;
+                        System.out.println(j);
+                        System.out.println(linea.charAt(j+1));
                         //System.out.println(linea.substring(indice_inf, indice_sup));
                         if(indice_inf >= 0 && indice_sup >= 0){
                             //linea = linea.substring(indice_inf, indice_sup);
                             //linea = linea.replaceAll(",p,", ",");
                             cadena1 = linea.substring(indice_inf, j);
-                            cadena2 = linea.substring(j+6, indice_sup);
+                            cadena2 = linea.substring(j+offset+2, indice_sup);
                             linea = cadena1 + cadena2;
                             arc.EscribirEnArchivo(linea+",1");
                             System.out.println(linea + ",1");
@@ -330,14 +346,16 @@ public class Formulario extends javax.swing.JFrame {
                         if (linea.contains("p")) {
                             int k = linea.indexOf("p");
                             indice_inf = k - cantidad;
-                            indice_sup = k + cantidad + 1 + 4;
+                            indice_sup = k + cantidad + offset+1;
                             //System.out.println(linea.substring(indice_inf, indice_sup));
                             
                             if(indice_inf >= 0 && indice_sup >= 0){
+                                System.out.println(k);
+                                System.out.println(offset);
                                 //linea = linea.substring(indice_inf, indice_sup);
                                 //linea = linea.replaceAll(",p,", ",");
                                 cadena1 = linea.substring(indice_inf, k);
-                                cadena2 = linea.substring(k+6, indice_sup);
+                                cadena2 = linea.substring(k+offset+2, indice_sup);
                                 linea = cadena1 + cadena2;
                                 arc.EscribirEnArchivo(linea+",1");
                                 //System.out.println(cadena1 + " " + cadena2);
@@ -373,13 +391,13 @@ public class Formulario extends javax.swing.JFrame {
                     if (linea.contains("p")) {
                         int j = linea.indexOf("p");
                         indice_inf = j-(cantidad);
-                        indice_sup = j+((cantidad)+1)+4;
+                        indice_sup = j+((cantidad)+1)+offset;
                         //System.out.println(linea.substring(indice_inf, indice_sup));
                         if(indice_inf >= 0 && indice_sup >= 0){
                             //linea = linea.substring(indice_inf, indice_sup);
                             //linea = linea.replaceAll(",p,", ",");
                             cadena1 = linea.substring(indice_inf, j);
-                            cadena2 = linea.substring(j+6, indice_sup);
+                            cadena2 = linea.substring(j+2+offset, indice_sup);
                             linea = cadena1 + cadena2;
                             arc.EscribirEnArchivo(linea+",0");
                             //System.out.println(linea + ",0");
@@ -408,13 +426,13 @@ public class Formulario extends javax.swing.JFrame {
                         if (linea.contains("p")) {
                             int k = linea.indexOf("p");
                             indice_inf = k - cantidad;
-                            indice_sup = k + cantidad + 1 + 4;
+                            indice_sup = k+((cantidad))+offset+1;
                             //System.out.println(linea.substring(indice_inf, indice_sup));
                             if(indice_inf >= 0 && indice_sup >= 0){
                                 //linea = linea.substring(indice_inf, indice_sup);
                                 //linea = linea.replaceAll(",p,", ",");
                                 cadena1 = linea.substring(indice_inf, k);
-                                cadena2 = linea.substring(k+6, indice_sup);
+                                cadena2 = linea.substring(k+offset+2, indice_sup);
                                 linea = cadena1 + cadena2;
                                 arc.EscribirEnArchivo(linea+",0");
                                 //System.out.println(linea + ",0");
@@ -432,6 +450,10 @@ public class Formulario extends javax.swing.JFrame {
             Logger.getLogger(Formulario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
