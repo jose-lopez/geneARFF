@@ -28,6 +28,7 @@ public class Generador {
         Formulario venPrincipal = new Formulario();
         venPrincipal.setTitle("Generador Arff");
         venPrincipal.show();
+        System.out.println("wtf");
         
     }
     
